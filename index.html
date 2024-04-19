@@ -1,66 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <base target="_top">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Form đăng ký thông tin</title>
-
+    <title>Đăng ký thông tin</title>
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    
-    <style>
-        /* Thêm CSS tùy chỉnh tại đây nếu cần */
-        body {
-            background-color: #f8f9fa; /* Màu nền */
-        }
-    </style>
 </head>
 <body>
-    <div class="container mt-5"> <!-- Container Bootstrap -->
-        <div class="row justify-content-center"> <!-- Row Bootstrap: căn giữa nội dung -->
-            <div class="col-md-6"> <!-- Cột Bootstrap: chiều rộng 50% trên màn hình lớn -->
-                <div class="card shadow"> <!-- Thẻ card để bao bọc nội dung -->
-                    <div class="card-body">
-                        <h3 class="text-center mb-4">Đăng ký thông tin</h3>
-                        
-                        <form id="ss-form" class="text-left" role="form" method="GET" action="https://script.google.com/macros/s/AKfycbxPf2aPjYMc6hpkzzzDxjp8te8VaYuWEB3bBBbJPuSLaWX7E1a9kOThdYqkFs2cUSZp/exec">
-                            <div class="form-group">
-                                <input title="" required="" class="form-control" placeholder=" Họ tên... " dir="auto" id="hoten" name="hoten" type="text">
-                            </div>
-                            <div class="form-group">
-                                <input title="" required="" class="form-control" placeholder=" Số điện thoại... " dir="auto" id="dienthoai" name="dienthoai" type="text">
-                            </div>
-                            <div class="form-group">
-                                <input title="" required="" class="form-control" placeholder=" Năm sinh... " dir="auto" id="namsinh" name="namsinh" type="date">
-                            </div>
-                            <div class="form-group text-center">
-                                <button class="btn btn-primary btn-block" id="ss-submit" type="submit">Gửi đăng ký</button>
-                            </div>
-                        </form>
-
-                        <div id="submit-message" class="text-center" style="display: none;">
-                            <p>Đã gửi thông tin thành công!</p>
-                        </div>
-                    </div>
-                </div>
+    <div class="container">
+        <h2 class="mt-5">Đăng ký thông tin</h2>
+        <form id="registrationForm">
+            <div class="form-group">
+                <label for="hoten">Họ tên:</label>
+                <input type="text" class="form-control" id="hoten" name="hoten" required>
             </div>
-        </div>
+            <div class="form-group">
+                <label for="dienthoai">Điện thoại:</label>
+                <input type="text" class="form-control" id="dienthoai" name="dienthoai" required>
+            </div>
+            <div class="form-group">
+                <label for="namsinh">Năm sinh:</label>
+                <input type="date" class="form-control" id="namsinh" name="namsinh" required>
+            </div>
+            <button type="button" class="btn btn-primary" onclick="submitForm()">Gửi đăng ký</button>
+        </form>
     </div>
 
-    <!-- Bootstrap JS và Popper.js -->
+    <!-- Bootstrap JS và các thư viện khác -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-    <!-- JavaScript để xử lý sự kiện submit của form -->
     <script>
-        document.getElementById('ss-form').addEventListener('submit', function(event) {
-            event.preventDefault(); // Ngăn chặn hành động mặc định của form (mở trang mới)
+        function submitForm() {
+            var formData = {
+                hoten: document.getElementById('hoten').value,
+                dienthoai: document.getElementById('dienthoai').value,
+                namsinh: document.getElementById('namsinh').value
+            };
 
-            // Hiển thị thông báo thành công
-            document.getElementById('submit-message').style.display = 'block';
-        });
+            fetch('https://script.google.com/macros/s/AKfycbxPf2aPjYMc6hpkzzzDxjp8te8VaYuWEB3bBBbJPuSLaWX7E1a9kOThdYqkFs2cUSZp/exec', {
+                method: 'POST',
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.result === 'success') {
+                    alert('Đăng ký thành công!');
+                    document.getElementById('registrationForm').reset();
+                } else {
+                    alert('Đăng ký thất bại. Vui lòng thử lại.');
+                }
+            })
+            .catch(error => {
+                console.error('Đã xảy ra lỗi:', error);
+                alert('Đã xảy ra lỗi trong quá trình đăng ký.');
+            });
+        }
     </script>
 </body>
 </html>
