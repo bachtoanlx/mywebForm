@@ -1,48 +1,52 @@
-<div id="dangky" class="col-md-4  col-sm-12  dangky ">
-					<div class="row">
-						<h3 class="index-title text-center">Form đăng ký thông tin</h3>	
-								<!--Cách 1: HIỂN THỊ THÔNG BÁO DẠNG POUPUP -->
-								<script type="text/javascript">
-									var submitted=false;
-								</script>
-								<iframe id="hidden_iframe" name="hidden_iframe" onload="if(submitted){alert('Bạn đã gửi thông tin thành công !');}" style="display: none;"></iframe>
-								<!--Cách 2: HIỂN THỊ THÔNG BÁO DẠNG LINK-->
-								 
-						<div class=" wow fadeInRight animated" style="visibility: visible; animation-name: fadeInRight;">
-							<script type="text/javascript">
-								var submitted=false;
-							</script>
-							<iframe id="hidden_iframe" name="hidden_iframe" onload="if(submitted){window.location='thongbao.html';}" style="display: none;"></iframe>
-							<!--Cách 2: End HIỂN THỊ THÔNG BÁO DẠNG LINK-->
-							<form onsubmit="submitted=true;" target="hidden_iframe" class="text-left"  role="form" id="ss-form" method="GET" action="https://script.google.com/macros/s/AKfycbxPf2aPjYMc6hpkzzzDxjp8te8VaYuWEB3bBBbJPuSLaWX7E1a9kOThdYqkFs2cUSZp/exec">
-								<div class="form-group col-md-10 col-md-offset-1 col-sm-12">
-									<div>
-										<input title="" required="" class="form-control" placeholder=" Họ tên... " dir="auto" id="hoten" value="" name="hoten" type="text">
-									</div>
-								</div>
-								
-								<div class="form-group col-md-10 col-md-offset-1 col-sm-12">
-									<div>
-										<input title="" required="" class="form-control" placeholder=" Số điện thoại... " dir="auto" id="dienthoai" value="" name="dienthoai" type="text">
-									</div>
-								</div>
-								
-								<div class="form-group col-md-10 col-md-offset-1 col-sm-12">
-									<div>
-										<input title="" required="" class="form-control" placeholder=" Năm sinh... " dir="auto" id="namsinh" value="" name="namsinh" type="date">
-									</div>
-								</div>
-								
-								<div class="clear"></div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <base target="_top">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form đăng ký thông tin</title>
 
-								<div class="form-group text-center">
-										<input class="btn btn-primary dangkybt" id="ss-submit" value="Gửi đăng ký" name="submit" type="submit">
-									</div>
-							</form>
-							
-							
-							
-							
-						</div>
-					</div>
-				</div>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    
+    <style>
+        /* Thêm CSS tùy chỉnh tại đây nếu cần */
+        body {
+            background-color: #f8f9fa; /* Màu nền */
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5"> <!-- Container Bootstrap -->
+        <div class="row justify-content-center"> <!-- Row Bootstrap: căn giữa nội dung -->
+            <div class="col-md-6"> <!-- Cột Bootstrap: chiều rộng 50% trên màn hình lớn -->
+                <div class="card shadow"> <!-- Thẻ card để bao bọc nội dung -->
+                    <div class="card-body">
+                        <h3 class="text-center mb-4">Đăng ký thông tin</h3>
+                        
+                        <form onsubmit="submitted=true;" target="hidden_iframe" class="text-left" role="form" id="ss-form" method="GET" action="https://script.google.com/macros/s/AKfycbxPf2aPjYMc6hpkzzzDxjp8te8VaYuWEB3bBBbJPuSLaWX7E1a9kOThdYqkFs2cUSZp/exec">
+                            <div class="form-group">
+                                <input title="" required="" class="form-control" placeholder=" Họ tên... " dir="auto" id="hoten" value="" name="hoten" type="text">
+                            </div>
+                            <div class="form-group">
+                                <input title="" required="" class="form-control" placeholder=" Số điện thoại... " dir="auto" id="dienthoai" value="" name="dienthoai" type="text">
+                            </div>
+                            <div class="form-group">
+                                <input title="" required="" class="form-control" placeholder=" Năm sinh... " dir="auto" id="namsinh" value="" name="namsinh" type="date">
+                            </div>
+                            <div class="form-group text-center">
+                                <input class="btn btn-primary btn-block" id="ss-submit" value="Gửi đăng ký" name="submit" type="submit">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS và Popper.js -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
