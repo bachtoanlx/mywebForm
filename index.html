@@ -20,7 +20,7 @@
                 <div class="card shadow"> <!-- Thẻ card để bao bọc nội dung -->
                     <div class="card-body">
                         <h3 class="text-center mb-4">Đăng ký thông tin</h3>
-        <form id="registrationForm">
+        <form id="registrationForm" onsubmit="submitForm(); return false;">
             <div class="form-group">
                 <label for="hoten">Họ tên:</label>
                 <input type="text" class="form-control" placeholder=" Họ tên... " id="hoten" name="hoten" required>
@@ -29,11 +29,23 @@
                 <label for="dienthoai">Điện thoại:</label>
                 <input type="number" class="form-control" placeholder=" Số điện thoại... " id="dienthoai" name="dienthoai" required>
             </div>
+	    <div class="form-group">
+                <label for="khoi">Khối:</label>
+                <select class="form-control" id="khoi" name="khoi" required>
+                     <option value="K1">Khối K1</option>
+                     <option value="K2">Khối K2</option>
+                     <option value="K3">Khối K3</option>
+                </select>
+            </div>
             <div class="form-group">
                 <label for="namsinh">Năm sinh:</label>
                 <input type="date" class="form-control" placeholder=" Ngày, tháng, năm sinh... " id="namsinh" name="namsinh" required>
             </div>
-            <button type="button" class="btn btn-primary" onclick="submitForm()">Gửi đăng ký</button>
+             <div class="form-group text-center">
+             	<button class="btn btn-primary btn-block" id="ss-submit" type="submit">Gửi đăng ký</button>
+             </div>
+	       <h6 class="text-right mb-2" style="color: #e3cac8; font-weight: 100;">Design by bachtoan</h6>
+
         </form>
     </div>
 
@@ -44,30 +56,35 @@
 
     <script>
         function submitForm() {
-            var formData = {
-                hoten: document.getElementById('hoten').value,
-                dienthoai: document.getElementById('dienthoai').value,
-                namsinh: document.getElementById('namsinh').value
-            };
+    var formData = {
+        hoten: document.getElementById('hoten').value,
+        dienthoai: document.getElementById('dienthoai').value,
+        khoi: document.getElementById('khoi').value,
+        namsinh: document.getElementById('namsinh').value
+    };
 
-            fetch('https://script.google.com/macros/s/AKfycbxPf2aPjYMc6hpkzzzDxjp8te8VaYuWEB3bBBbJPuSLaWX7E1a9kOThdYqkFs2cUSZp/exec', {
-                method: 'POST',
-                body: JSON.stringify(formData)
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.result === 'success') {
-                    alert('Đăng ký thành công!');
-                    document.getElementById('registrationForm').reset();
-                } else {
-                    alert('Đăng ký thất bại. Vui lòng thử lại.');
-                }
-            })
-            .catch(error => {
-                console.error('Đã xảy ra lỗi:', error);
-                alert('Đã xảy ra lỗi trong quá trình đăng ký.');
-            });
+    console.log(formData); // Kiểm tra dữ liệu trước khi gửi đi
+
+    fetch('https://script.google.com/macros/s/AKfycbxPf2aPjYMc6hpkzzzDxjp8te8VaYuWEB3bBBbJPuSLaWX7E1a9kOThdYqkFs2cUSZp/exec', {
+        method: 'POST',
+        body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(data); // Kiểm tra phản hồi từ Google Script
+        if (data.result === 'success') {
+            alert('Đăng ký thành công!');
+            document.getElementById('registrationForm').reset();
+        } else {
+            alert('Đăng ký thất bại. Vui lòng thử lại.');
         }
+    })
+    .catch(error => {
+        console.error('Đã xảy ra lỗi:', error);
+        alert('Đã xảy ra lỗi trong quá trình đăng ký.');
+    });
+}
+
     </script>
 </body>
 </html>
