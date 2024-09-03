@@ -1,160 +1,125 @@
 <!DOCTYPE html>
-<html lang="vn">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dữ liệu</title>
-    <!-- Bootstrap MENU CSS -->
-    <link rel="stylesheet" href="styles.css"> <!-- Liên kết đến file CSS -->
-    <!-- Nhúng CSS của Bootstrap -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <title>Form Nhập Liệu Đa Năng</title>
     <style>
+      
 
-    </style>
+        
+      .hidden-content {
+    display: none;
+}
+
+.blur-content {
+    filter: blur(5px);
+    pointer-events: none;
+}
+
+    </style> 
 </head>
-<body>     
-    <!-- Bảng dữ liệu từ Google Sheets -->
-    <div class="table-responsive">
-        <table class="table table-bordered table-sm" id="data-table">
-            <thead>
-                <tr id="header-row"></tr>
-            </thead>
-            <tbody id="data-body"></tbody>
-        </table>
+<body>
+    <div id="menu-container"></div>
+    <div class="protected-content"> <!-- Bảo vệ nội dung với khách-->	
+        
+    <div class="container">
+        <h4 class="text-center">Nhập Thông Tin</h4>
+        <form id="infoForm">
+            <div class="form-group">
+                <label for="userType">Chọn loại người dùng:</label>
+                <select id="userType" name="userType" class="form-control">
+                    <option value="" disabled selected>Chọn loại người dùng</option>
+                    <option value="student">Sinh viên</option>
+                    <option value="teacher">Giáo viên</option>
+                </select>
+            </div>
+            <div class="admin-content"> <!-- Bảo vệ nội dung cảu admin-->
+            <!-- Form Sinh viên -->
+            <div id="studentFields" class="form-fields" style="display: none;">
+                <h2>Thông Tin Sinh Viên</h2>
+                <div class="form-group">
+                    <label for="studentName">Họ và tên:</label>
+                    <input type="text" id="studentName" name="studentName" class="form-control" placeholder="Nhập họ và tên">
+                </div>
+                <div class="form-group">
+                    <label for="studentID">Mã sinh viên:</label>
+                    <input type="text" id="studentID" name="studentID" class="form-control" placeholder="Nhập mã sinh viên">
+                </div>
+                <div class="form-group">
+                    <label for="studentMajor">Chuyên ngành:</label>
+                    <input type="text" id="studentMajor" name="studentMajor" class="form-control" placeholder="Nhập chuyên ngành">
+                </div>
+            </div>
 
-        <!-- Nút hiển thị tất cả -->
-        <button class="btn btn-primary mt-3" id="showAllButton" style="width: 100%;">Hiển thị tất cả</button>
+            <!-- Form Giáo viên -->
+            <div id="teacherFields" class="form-fields" style="display: none;">
+                <h2>Thông Tin Giáo Viên</h2>
+                <div class="form-group">
+                    <label for="teacherName">Họ và tên:</label>
+                    <input type="text" id="teacherName" name="teacherName" class="form-control" placeholder="Nhập họ và tên">
+                </div>
+                <div class="form-group">
+                    <label for="teacherID">Mã giáo viên:</label>
+                    <input type="text" id="teacherID" name="teacherID" class="form-control" placeholder="Nhập mã giáo viên">
+                </div>
+                <div class="form-group">
+                    <label for="teacherDepartment">Khoa:</label>
+                    <input type="text" id="teacherDepartment" name="teacherDepartment" class="form-control" placeholder="Nhập khoa">
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Gửi</button>
+        </form>
     </div>
-
-    <!-- Nhúng JavaScript của Bootstrap (cần thiết cho một số thành phần Bootstrap) -->
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-    <!-- Nhúng JavaScript của Google Sheets API -->
-    <script src="https://apis.google.com/js/api.js"></script>
+   <!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<!-- Popper.js (cần thiết cho Bootstrap) -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<!-- Bootstrap JS -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://apis.google.com/js/api.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<script src="script.js"></script> <!-- Liên kết đến file JavaScript -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            var columnsToHide = [6]; // Chỉ số của các cột bạn muốn ẩn (tính từ 0)
-            var dataRows = []; // Mảng lưu trữ các dòng dữ liệu từ Google Sheets
+    const userTypeSelect = document.getElementById('userType');
+    const studentFields = document.getElementById('studentFields');
+    const teacherFields = document.getElementById('teacherFields');
 
-            // Load Sheets API và gọi hàm fetchSheetData để lấy dữ liệu
-            gapi.load('client', loadSheetsApi);
+    userTypeSelect.addEventListener('change', function() {
+        const selectedValue = userTypeSelect.value;
 
-            function loadSheetsApi() {
-                gapi.client.init({
-                    apiKey: 'AIzaSyANdbEb_R9E-tXldeDDoMTRfFX54NECou4',
-                    discoveryDocs: ["https://sheets.googleapis.com/$discovery/rest?version=v4"],
-                }).then(function() {
-                    fetchSheetData();
-                });
-            }
+        if (selectedValue === 'student') {
+            studentFields.style.display = 'block';
+            teacherFields.style.display = 'none';
+        } else if (selectedValue === 'teacher') {
+            studentFields.style.display = 'none';
+            teacherFields.style.display = 'block';
+        } else {
+            studentFields.style.display = 'none';
+            teacherFields.style.display = 'none';
+        }
+    });
+});
 
-            function fetchSheetData() {
-                gapi.client.sheets.spreadsheets.values.get({
-                    spreadsheetId: '1htMnEA7sD2Or3gJcAcNI6D-Xdj4DhbfxfAY9D7d3HAI',
-                    range: 'Sheet1!A1:G'
-                }).then(function(response) {
-                    var values = response.result.values;
+// Sử dụng JavaScript để tải nội dung menu từ menu.html
+    $(document).ready(function() {
+    // Chèn menu vào phần tử có ID 'menu-container'
+    $('#menu-container').load('menu.html');
+});
 
-                    if (values && values.length > 0) {
-                        var headerRow = values[0]; // Lấy dòng đầu tiên làm tiêu đề
-                        dataRows = values.slice(1); // Lấy tất cả dòng dữ liệu (bỏ qua dòng đầu là tiêu đề)
+$(document).ready(function () {
+    $('.dropdown-toggle').dropdown(); // Bootstrap 4
+    // Hoặc với Bootstrap 5
+    var dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'))
+    var dropdownList = dropdownElementList.map(function (dropdownToggleEl) {
+        return new bootstrap.Dropdown(dropdownToggleEl)
+    })
+});
 
-                        // Hiển thị tiêu đề của bảng
-                        var headerRowElement = document.getElementById('header-row');
-                        headerRow.forEach(function(cellValue, index) {
-                            if (!columnsToHide.includes(index)) {
-                                var th = document.createElement('th');
-                                th.textContent = cellValue;
-                                headerRowElement.appendChild(th);
-                            }
-                        });
 
-                        // Thêm cột "Xóa" vào tiêu đề
-                        var th = document.createElement('th');
-                        th.textContent = 'Xóa';
-                        headerRowElement.appendChild(th);
-
-                        // Hiển thị dữ liệu ban đầu (chỉ hiển thị 7 dòng đầu)
-                        showDataRows(dataRows.slice(0, 7));
-                    } else {
-                        console.log('No data found.');
-                    }
-                }, function(error) {
-                    console.error('Error loading Google Sheets API:', error);
-                });
-            }
-
-            function showDataRows(rows) {
-                var dataBodyElement = document.getElementById('data-body');
-                dataBodyElement.innerHTML = ''; // Xóa dữ liệu hiện có trong tbody
-
-                // Hiển thị các dòng dữ liệu mới
-                rows.forEach(function(row) {
-                    var tr = document.createElement('tr');
-                    row.forEach(function(cellValue, index) {
-                        if (!columnsToHide.includes(index)) {
-                            var td = document.createElement('td');
-                            td.textContent = cellValue;
-                            tr.appendChild(td);
-                        }
-                    });
-
-                    // Thêm cột "Xóa" vào mỗi dòng dữ liệu
-                    var deleteTd = document.createElement('td');
-                    var deleteButton = document.createElement('button');
-                    deleteButton.textContent = 'Xóa';
-                    deleteButton.classList.add('btn', 'btn-danger', 'btn-sm');
-                    deleteButton.dataset.id = row[0]; // Gán ID từ cột đầu tiên vào dataset của nút
-                    deleteButton.addEventListener('click', function() {
-                        deleteRow(deleteButton.dataset.id);
-                    });
-                    deleteTd.appendChild(deleteButton);
-                    tr.appendChild(deleteTd);
-
-                    dataBodyElement.appendChild(tr);
-                });
-            }
-
-            function deleteRow(id) {
-                // Gửi yêu cầu POST để xóa hàng với ID
-                fetch('https://script.google.com/macros/s/AKfycbxBJkL6PorkD-Y5315-LCerrmIvaR4jmv_mkl4sCKxkx1upAergmsT-PtZ48vrR9pRi/exec', { // Thay YOUR_SCRIPT_ID bằng ID của script
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ id: id })
-                }).then(response => {
-                    if (response.ok) {
-                        console.log('Row deleted successfully.');
-                        // Cập nhật lại dữ liệu sau khi xóa
-                        fetchSheetData();
-                    } else {
-                        console.error('Failed to delete row.');
-                    }
-                }).catch(error => {
-                    console.error('Error deleting row:', error);
-                });
-            }
-
-            // Lắng nghe sự kiện khi nhấn nút "Hiển thị tất cả" hoặc "Thu gọn"
-            var showAllButton = document.getElementById('showAllButton');
-            var isExpanded = false; // Theo dõi trạng thái dữ liệu (đã được mở rộng hay thu gọn)
-            showAllButton.addEventListener('click', function() {
-                if (isExpanded) {
-                    // Đang ở trạng thái đã mở rộng, cần thu gọn lại
-                    showDataRows(dataRows.slice(0, 7)); // Chỉ hiển thị 7 dòng đầu
-                    showAllButton.textContent = 'Hiển thị tất cả'; // Đổi nội dung của nút
-                    isExpanded = false; // Cập nhật trạng thái
-                } else {
-                    // Đang ở trạng thái thu gọn, cần hiển thị tất cả
-                    showDataRows(dataRows); // Hiển thị tất cả dữ liệu
-                    showAllButton.textContent = 'Thu gọn'; // Đổi nội dung của nút
-                    isExpanded = true; // Cập nhật trạng thái
-                }
-            });
-        });
     </script>
 </body>
 </html>
